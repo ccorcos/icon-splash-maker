@@ -1,0 +1,104 @@
+#!/usr/bin/env coffee
+
+newIcon = (size, multiplier=1) ->
+  if multiplier > 1
+    return {width: size*multiplier, height: size*multiplier, name: "icon-#{size}x#{size}@#{multiplier}x.png"}
+  else
+    return {width: size, height: size, name: "icon-#{size}x#{size}.png"}
+
+newSplash = (size, multiplier=1) ->
+  if multiplier > 1
+    return {width: size[0]*multiplier, height: size[1]*multiplier, name: "splash-#{size[0]}x#{size[1]}@#{multiplier}x.png"}
+  else
+    return {width: size[0], height: size[1], name: "splash-#{size[0]}x#{size[1]}.png"}
+
+iconSizes = [
+  {width:1024, height:1024, name:'icon-1024.jpg'}       # iTunes icon must be jpg
+  newIcon(1024)
+  newIcon(1024, 2)
+  newIcon(196)
+  newIcon(48)
+  newIcon(36)
+  newIcon(57)
+  newIcon(57, 2)
+  newIcon(57, 3)
+  newIcon(60)
+  newIcon(60, 2)
+  newIcon(60, 3)
+  newIcon(72)
+  newIcon(72, 2)
+  newIcon(76)
+  newIcon(76, 2)
+  newIcon(80)
+  newIcon(96)
+]
+
+splashSizes = [
+  newSplash([1024, 748])
+  newSplash([1024, 768])
+  newSplash([1024, 768], 2)
+  newSplash([1280, 720])
+  newSplash([1536, 2008])
+  newSplash([200, 320])
+  newSplash([2048, 1496])
+  newSplash([320, 200])
+  newSplash([320, 460])
+  newSplash([320, 460], 2)
+  newSplash([320, 480])
+  newSplash([320, 480], 2)
+  newSplash([320, 568])
+  newSplash([320, 568], 2)
+  newSplash([480, 320])
+  newSplash([480, 320], 2)
+  newSplash([480, 800])
+  newSplash([640, 1096])
+  newSplash([640, 920])
+  newSplash([720, 1280])
+  newSplash([768, 1004])
+  newSplash([768, 1024])
+  newSplash([768, 1024], 2)
+  newSplash([800, 480])
+]
+
+# mkdirp = require 'mkdirp'
+fs = require 'fs'
+program = require 'commander'
+colors = require 'colors'
+webshot = require 'webshot'
+
+# mkdirp 'icons', (err) -> if err then throw err
+# mkdirp 'splash', (err) -> if err then throw err
+
+program
+  .version('1.0.0')
+  .usage('-i icon.html -s splash.html')
+  .option('-i, --icon <file>', 'generate icons')
+  .option('-s, --splash <file>', 'generate splash screens')
+  .parse(process.argv)
+
+if program.icon
+  fs.readFile program.icon, 'utf8', (err, data) ->
+    if err then throw err
+    for iconSize in iconSizes
+      do (iconSize) -> 
+        webshot data, "icons/"+iconSize.name, 
+          {siteType:'html', screenSize: {height:iconSize.height, width: iconSize.width}}, 
+          (err) ->
+            if err
+              console.log "#{iconSize.name}".red
+            else
+              console.log "#{iconSize.name}".green
+
+if program.splash
+  fs.readFile program.splash, 'utf8', (err, data) ->
+    if err then throw err
+    for splashSize in splashSizes
+      do (splashSize) ->
+        webshot data, "splash/"+splashSize.name, 
+          {siteType:'html', screenSize: {height:splashSize.height, width: splashSize.width}}, 
+          (err) ->
+            if err
+              console.log "#{splashSize.name}".red
+            else
+              console.log "#{splashSize.name}".green
+
