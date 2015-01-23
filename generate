@@ -60,14 +60,8 @@ splashSizes = [
   newSplash([800, 480])
 ]
 
-# mkdirp = require 'mkdirp'
-fs = require 'fs'
 program = require 'commander'
 colors = require 'colors'
-webshot = require 'webshot'
-
-# mkdirp 'icons', (err) -> if err then throw err
-# mkdirp 'splash', (err) -> if err then throw err
 
 program
   .version('1.0.0')
@@ -76,29 +70,21 @@ program
   .option('-s, --splash <file>', 'generate splash screens')
   .parse(process.argv)
 
+execAsync = require('child_process').exec
+exec = require('sync-exec')
+
+snapshot = (filename, width, height, output) ->
+  obj = exec "slimerjs snapshot.js #{filename} #{width} #{height} #{output}"
+  if obj.stderr
+    console.log obj.stderr
+    console.log output.red
+  else
+    console.log output.green
+
 if program.icon
-  fs.readFile program.icon, 'utf8', (err, data) ->
-    if err then throw err
-    for iconSize in iconSizes
-      do (iconSize) -> 
-        webshot data, "icons/"+iconSize.name, 
-          {siteType:'html', screenSize: {height:iconSize.height, width: iconSize.width}}, 
-          (err) ->
-            if err
-              console.log "#{iconSize.name}".red
-            else
-              console.log "#{iconSize.name}".green
+  for obj in iconSizes
+    snapshot program.icon, obj.width, obj.height, 'icons/'+obj.name
 
 if program.splash
-  fs.readFile program.splash, 'utf8', (err, data) ->
-    if err then throw err
-    for splashSize in splashSizes
-      do (splashSize) ->
-        webshot data, "splash/"+splashSize.name, 
-          {siteType:'html', screenSize: {height:splashSize.height, width: splashSize.width}}, 
-          (err) ->
-            if err
-              console.log "#{splashSize.name}".red
-            else
-              console.log "#{splashSize.name}".green
-
+  for obj in splashSizes
+    snapshot program.icon, obj.width, obj.height, 'splash/'+obj.name

@@ -5,12 +5,9 @@
   "author": "Chet Corcos <ccorcos@gmail.com> (http://www.chetcorcos.com/)",
   "license": "MIT",
   "dependencies": {
-    "mkdirp": "latest",
-    "path": "latest",
-    "fs": "latest",
     "commander": "latest",
     "coffee-script": "latest",
-    "webshot": "latest",
+    "sync-exec": "latest",
     "colors": "latest"
   }
 }
