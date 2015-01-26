@@ -1,7 +1,6 @@
 # Icon and Splash Screen Maker
 
-Make icons and splash screen using SVG, HTML, CSS, and render them in all the sizes you need using [node-webshot](https://github.com/brenden/node-webshot)!
-
+Make icons and splash screen using SVG, HTML, CSS, and render them in all the sizes you need.
 ## To Do
 
 - Comment on each size, where and how to use it in the head or cordova, etc.
